@@ -1,0 +1,387 @@
+#include<regx51.h>
+#include<string.h>
+
+	sbit 	gONE = P1^0; 
+	sbit	gTWO =	P1^1;
+	sbit 	gTHREE =	P1^2;
+ 	sbit	gFOUR =	P1^3;
+	sbit 	rONE =	P1^4;  
+	sbit 	rTWO =	P1^5;
+	sbit	rTHREE =	P1^6;
+	sbit 	rFOUR =	P1^7;
+	sbit 	yONE =	P2^0; 
+	sbit 	yTWO =	P2^1;
+	sbit 	yTHREE =	P2^2;
+	sbit 	yFOUR = P2^3;
+	sbit sensorONE =P3^0;
+	sbit sensorTWO =P3^1;
+	sbit sensorTHREE =P3^2;
+	sbit sensorFOUR =P3^3;
+	sbit sensorFIVE =P3^4;
+	sbit sensorSIX =P3^5;
+	sbit sensorSEVEN =P3^6;
+	sbit sensorEIGHT =P3^7;
+	sbit EN =P2^4;
+	sbit RW =P2^5;
+	sbit RS = P2^6;
+	
+	
+	
+void lcdinit();
+void lcdData(unsigned char l);
+void lcdcmd(unsigned char k);
+void display(unsigned char s,t,u);
+void Welcome(unsigned char c[],unsigned char d[]);
+void ConvertAndDisplay(unsigned int value1,unsigned char c[]);
+void delay(unsigned int msc);
+unsigned int set(unsigned int p);
+void reset();
+void main()
+{	
+
+		
+		unsigned char c[15];
+		unsigned char d[]="42006B1BB8";
+		unsigned int COUNT=0;
+		int count1=0,count2=0,count3=0,count4=0,signal=1,density=1,flag=0;
+	  int f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,f8=1,yellow=0;
+	int first=0;
+	RW=0;
+	 reset();
+	
+lcdinit();
+Welcome("Density Based","Traffic Signal");
+delay(1000);
+
+	
+	while(1)
+		
+{		
+		TMOD =0x01;	
+	 sensorONE =1;
+	 sensorTWO =1;
+	 sensorTHREE =1;
+	 sensorFOUR =1;
+	 sensorFIVE =1;
+	 sensorSIX =1;
+	 sensorSEVEN =1;
+	 sensorEIGHT =1;
+	if(sensorONE == 0 && f1 == 1)
+	{
+		f1=0;
+		count1++;
+		
+		0
+	}
+	else if(sensorONE==1)
+		f1=1;
+	if(sensorTWO==0 && f2==1)
+	{
+		f2=0;
+		count1--;
+		
+		
+	}
+	else if(sensorTWO==1)
+		f2=1;
+	if(sensorTHREE==0 && f3==1)
+	{
+		f3=0;
+		count2++;
+	}
+	else if(sensorTHREE==1)
+		f3=1;
+	if(sensorFOUR==0 && f4==1)
+	{
+		f4=0;
+		count2--;
+	}
+	else if(sensorFOUR==1)
+		f4=1;
+	if(sensorFIVE==0 && f5==1)
+	{
+		f5=0;
+		count3++;
+	}
+	else if(sensorFIVE==1)
+		f5=1;
+	if(sensorSIX==0 && f6==1)
+	{
+		f6=0;
+		count3--;
+	}
+	else if(sensorSIX==1)
+		f6=1;
+	if(sensorSEVEN==0 && f7==1)
+	{
+		f7=0;
+		count4++;
+	}
+	else if(sensorSEVEN==1)
+		f7=1;
+	if(sensorEIGHT==0 && f8==1)
+	{
+		f8=0;
+		count4--;
+	}
+	else if(sensorEIGHT==1)
+		f8=1;
+	
+
+if(TF0 == 0)
+	{					
+						TR0 = 0;
+						TF0 = 0;
+			if((COUNT > 40000 && density==3 ) || (COUNT > 25000 && density==2 ) || (COUNT> 10000 && density==1) )
+			{
+				
+				COUNT=0;
+								if (signal==1 && flag==0)
+										{
+											reset();
+										
+											
+											yFOUR=1;
+											rONE=1;
+											rTWO=1;
+											rTHREE=1;
+											delay(500);
+											reset();
+											
+											gONE =1;
+											rTWO =1;
+											rTHREE =1;
+											rFOUR =1;
+										
+											signal=2;
+											flag=1;
+											density=set(count1);
+											first=1;
+											
+										}
+										next:
+										if (signal==2 && flag==0)
+										{
+											reset();
+																		
+											yONE=1;
+											rFOUR=1;
+											rTWO=1;
+											rTHREE=1;
+											delay(500);
+											reset();
+						
+											gTWO =1;
+											rONE =1;
+											rTHREE =1;
+											rFOUR =1;
+											
+											signal=3;
+											flag=1;
+											density = set(count2);
+										}
+										if (signal==3 && flag==0)
+										{
+									
+											
+											reset();
+											yTWO=1;
+											rONE=1;
+											rTWO=1;
+											rTHREE=1;
+											delay(500);
+											
+											reset();
+											gTHREE =1;
+											rTWO =1;
+											rONE =1;
+											rFOUR =1;
+											signal=4;
+											flag=1;
+											density=set(count3);
+										}
+										if (signal==4 && flag==0)
+										{
+											
+											reset();
+											yTHREE=1;
+											rONE=1;
+											rTWO=1;
+											rFOUR=1;
+											delay(500);
+											
+											reset();
+											gFOUR=1;
+											rTWO =1;
+											rTHREE =1;
+											rONE =1;
+											signal=1;
+											flag=1;
+											density=set(count4);
+										}
+				}			
+		if(flag==0)
+		{
+			TMOD=0x01;
+			TL0=0x00;
+			TH0=0x00;
+			TR0=1;
+		}
+		flag=0;
+		COUNT++;
+		
+	}
+	
+		
+	}
+}
+
+void delay(unsigned int msc)
+{
+	int x,y;
+	for(x=0;x<msc;x++)
+	{
+		for(y=0;y<113;y++);
+	}
+}
+
+unsigned int  set(unsigned int p)
+{			
+			int q;
+			TL0=0x00;
+			TH0=0x00;
+			TR0=1;	
+		
+	if (p<2)
+		q=1;
+	if (p>1 && p<3)
+		q=2;
+	if (p>2)
+		q=3;
+	return q;
+}
+void reset()
+{
+		gONE = 0; 
+		gTWO =	0;
+	 	gTHREE =	0;
+ 		gFOUR =	0;
+	 	rONE =	0;  
+	 	rTWO =	0;
+		rTHREE = 0;
+	 	rFOUR =	0;
+	 	yONE =	0; 
+	 	yTWO =	0;
+	 	yTHREE =	0;
+	 	yFOUR = 0;
+	
+	
+}
+
+void Welcome(unsigned char c[],unsigned char d[])
+{
+unsigned int i=0;
+
+lcdcmd(0x01);
+delay(10);
+lcdcmd(0x80);
+delay(10);
+
+i=0;
+while(c[i]!='\0')
+{
+lcdData(c[i]);
+i++;
+}
+
+lcdcmd(0xc0);
+delay(10);
+
+i=0;
+while(d[i]!='\0')
+{
+lcdData(d[i]);
+i++;
+}
+}
+
+void ConvertAndDisplay(unsigned int value1,unsigned char c[])
+{
+unsigned int i,a=0,j;
+unsigned char d1,d2,d3;
+for(i=0;i<value1;i++)
+a=a+1;
+lcdcmd(0x01);
+delay(10);
+lcdcmd(0x80);
+delay(10);
+
+
+j=0;
+while(c[j]!='\0')
+{
+lcdData(c[j]);
+j++;
+}
+d1=a%10;		
+a=a/10;
+d2=a%10;
+a=a/10;
+d3=a%10;
+
+lcdcmd(0xc0);
+delay(10);
+
+display(d1,d2,d3);
+return;
+}
+void lcdinit(void)
+{
+lcdcmd(0x38);
+delay(250);
+lcdcmd(0x0E);
+delay(250);
+lcdcmd(0x01);
+delay(250);
+lcdcmd(0x06);
+delay(250);
+lcdcmd(0x80);
+delay(250);
+}
+void lcdData(unsigned char l)
+{
+P0=l;
+RS=1;
+EN=1;
+delay(1);
+EN=0;
+return;
+}
+
+void lcdcmd(unsigned char k)
+{
+P0=k;
+RS=0;
+EN=1;
+delay(1);
+EN=0;
+return;
+
+}
+		   
+
+void display(unsigned char s,t,u)
+{
+s=s+0x30;			
+t=t+0x30;
+u=u+0x30;
+
+delay(50);
+
+lcdData(u);		
+delay(50);
+lcdData(t);
+delay(50);
+lcdData(s);
+delay(50);
+	return;
